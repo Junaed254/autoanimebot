@@ -42,6 +42,7 @@ async def tg_handler(appp, TECHZ_API_KEY):
     app = appp
     queue = app.queue
     Gogo = TechZApi.Gogo(TECHZ_API_KEY)
+    Gogo.base = "https://zia-api-0o4c.onrender.com/"
 
     while True:
         if len(queue) != 0:
@@ -53,6 +54,7 @@ async def tg_handler(appp, TECHZ_API_KEY):
                     data = Gogo.episode(i, lang="any")
                 except Exception as e:
                     logger.warning("Unable To Fetch Links : " + str(e))
+                    await add_to_failed(i)
                     queue.pop(0)
                     continue
 
@@ -74,8 +76,8 @@ async def tg_handler(appp, TECHZ_API_KEY):
                     await app.update_status(f"Sleeping for {SLEEP_TIME} seconds")
                     await asyncio.sleep(SLEEP_TIME)
 
-                for q in ['360p', '480p', '720p', '1080p']:
-                    if q not in data['dlinks']:
+                for q in ["360p", "480p", "720p", "1080p"]:
+                    if q not in data["dlinks"]:
                         await save_uploads(i, q)
 
                 await del_anime(i)
